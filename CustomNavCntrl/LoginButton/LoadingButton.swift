@@ -13,11 +13,24 @@ class LoadingButton: UIButton {
     private var cachedTitle: String?
     private var cachedConerRadius: CGFloat = 0
     
-    lazy private var spiner: CircleLayer! = {
-        let cLayer = CircleLayer(frame: self.frame)
-        self.layer.addSublayer(cLayer)
-        return cLayer
-    }()
+    //Don't work in swift 4
+//    lazy private var spiner: CircleLayer! = {
+//        let cLayer = CircleLayer(frame: self.frame)
+//        self.layer.addSublayer(cLayer)
+//        return cLayer
+//    }()
+    
+    private var spiner:CircleLayer {
+        get {
+            if(_spiner == nil) {
+                _spiner = CircleLayer(frame: self.frame)
+                self.layer.addSublayer(_spiner!)
+            }
+            return _spiner!
+        }
+    }
+    
+    private var _spiner:CircleLayer?
     
     @IBInspectable open var spinnerColor: UIColor = UIColor.white {
         didSet {
@@ -57,7 +70,7 @@ class LoadingButton: UIButton {
         cachedConerRadius = layer.cornerRadius
         setTitle("", for: UIControlState())
         
-        UIView.animate(withDuration: 0.3, animations: { [unowned self] in
+        UIView.animate(withDuration: 0.1, animations: { [unowned self] in
             self.layer.cornerRadius = self.frame.height / 2
             }, completion: { [unowned self] (finished) in
                 self.shrink()
@@ -81,7 +94,7 @@ class LoadingButton: UIButton {
     
     private func resetSpinnerIfNeeded() {
         if spiner.frame != self.frame {
-            spiner = nil
+            _spiner = nil
             commonSetup()
         }
     }
