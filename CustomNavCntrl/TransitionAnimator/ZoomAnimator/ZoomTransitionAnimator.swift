@@ -115,6 +115,13 @@ class ZoomTransitionAnimator: ZoomAnimator, UIViewControllerAnimatedTransitionin
             containerView.backgroundColor = .clear
             let snapshot = containerView.viewWithTag(ZoomAnimator.snapshotNumber)
             snapshot?.removeFromSuperview()
+            /**
+             * if fromView transform is not set to identity, then
+             * it causes problem [autolayout ambiguous constraint] while
+             * dismissing in iOS 11 ...
+             * (when used with navigation controller)
+             */
+            fromView.transform = .identity
             transitionContext.completeTransition(finished)
         }
     }
